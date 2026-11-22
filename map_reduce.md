@@ -57,7 +57,7 @@ A **monoid** is a set with a binary operation `⊕` and an identity element `e` 
 So with associativity, you can split the data into chunks, reduce each chunk on a
 different worker, then reduce the partial results.
 
-![Parallel tree reduction](parallel-reduce.png)
+![Parallel tree reduction](images/parallel-reduce.png)
 
 _Figure: Sequential vs. parallel tree reduction. Illustration created with Claude._
 
@@ -78,13 +78,13 @@ for (int i = 0; i < n; i++)
 
 1. **Split**: The loop iterations are divided among the threads. This is done by the `for`.
 
-- ![Omp For Loop](omp-for.png)
+- ![Omp For Loop](images/omp-for.png)
   [Figure: 2.9.2 Worksharing-Loop Construct](https://www.openmp.org/spec-html/5.0/openmpsu41.html)
 
 2. **Private copies**: Each thread gets its own private `sum`, initialized to the operator's initializer value, which is the **identity element**.
 3. **Local reduce**: Each thread accumulates its chunk into its own copy. Inside the loop, `sum += a[i]` **updates its private copy** instead of the shared `sum`.
 
-- ![Omp Reduction Clause](omp-reduction.png)
+- ![Omp Reduction Clause](images/omp-reduction.png)
   [Figure: 2.19.5.4 reduction Clause](https://www.openmp.org/spec-html/5.0/openmpsu107.html)
 
 4. **Combine.** At the end, the partial results are combined into the original `sum`.
@@ -97,11 +97,11 @@ for (int i = 0; i < n; i++)
 
 - Google describes their internal MapReduce solution to achieve availability and reliability when processing large amounts of data on a cluster with hundreds or thousands of machines connected over the network.
 
-  ![Paper MapReduce Execution](paper-mapreduce-execution.png)
+  ![Paper MapReduce Execution](images/paper-mapreduce-execution.png)
 
 **Master**: Assigns tasks, tracks progress and re-runs failed tasks. It is a single point of failure, as the authors write in the paper:
 
-![Master failure](paper-master-failure.png)
+![Master failure](images/paper-master-failure.png)
 
 **Map workers**: Read (key, value) pairs from a "split" (file chunk) and apply the `Map function`. The key/value pairs produced are buffered in memory and periodically written to the local disk, partitioned into **R** partitions, **one per reduce task**. The **locations** of these pairs are passed back to the **master**, which forwards these locations to the reduce workers.
 
@@ -113,7 +113,7 @@ These files are usually stored in a separate distributed system that can handle 
 
 ### Map Shuffle Reduce
 
-![Map Shuffle Reduce](mapshufflereduce.png)
+![Map Shuffle Reduce](images/mapshufflereduce.png)
 
 Source: [Imbalanced Big Data Oversampling: Taxonomy, Algorithms, Software, Guidelines and Future Directions](https://www.researchgate.net/publication/353478860_Imbalanced_Big_Data_Oversampling_Taxonomy_Algorithms_Software_Guidelines_and_Future_Directions)
 
